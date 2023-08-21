@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''File Storage'''
 import json
+import models
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -19,9 +20,18 @@ class FileStorage:
                   "Amenity": Amenity, "City": City, "Review": Review,
                   "State": State}
 
-    def all(self):
+    def all(self, cls=None):
         '''Return dictionary of <class>.<id> : object instance'''
-        return self.__objects
+        obj = {}
+        if cls is None:
+            return (self.__objects)
+        else:
+            if type(cls) is str:
+                cls = models.classes[cls]
+            for key, val in self.__objects.items():
+                if cls.__name__ == val.__class__.__name__:
+                    obj[key] = val
+            return (obj)
 
     def new(self, obj):
         '''Add new obj to existing dictionary of instances'''
@@ -51,3 +61,12 @@ class FileStorage:
                 self.__objects[key] = obj
         except FileNotFoundError:
             pass
+
+    def delete(self, obj=None):
+        '''Delete obj from __objects if present'''
+        if not obj:
+            return
+        key = '{}.{}'.format(type(obj).__name__, obj.id)
+        if key in self.__objects:
+            del self.__objects[key]
+            self.save()
