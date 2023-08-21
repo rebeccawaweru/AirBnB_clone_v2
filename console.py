@@ -12,6 +12,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from models.base_model import BaseModel
+from models import classes
 
 
 def arg_parse(arg):
@@ -37,7 +38,7 @@ class HBNBCommand(cmd.Cmd):
     Atrr:
        prompt: command prompt. Should be a string
     """
-
+    all_classes = classes
     prompt = "(hbnb) "
     __classes = {
         "BaseModel",
@@ -85,13 +86,24 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """Creating a new instance of class and printing id"""
-        larg = arg_parse(arg)
+        larg = split(arg)
         if len(larg) == 0:
             print("** class name missing **")
-        elif larg[0] not in HBNBCommand.__classes:
+        elif larg[0] not in self.all_classes:
             print("** class doesn't exist **")
         else:
-            print(eval(larg[0])().id)
+            cls = self.all_classes[larg[0]]
+            obj = cls()
+            if len(larg) > 1:
+                for i in range(1, len(larg)):
+                    pair = larg[i].split('=')
+                    if len(pair) == 2:
+                        pair[1] = pair[1].replace('_', ' ')
+                        try:
+                            setattr(obj, pair[0], eval(pair[1]))
+                        except (SyntaxError, NameError):
+                            setattr(obj, pair[0], pair[1])
+            print(obj.id)
             storage.save()
 
     def do_show(self, arg):
