@@ -2,71 +2,70 @@
 '''File Storage'''
 import json
 import models
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
 
 
 class FileStorage:
-    '''serializes and deserialzes json files'''
-
-    __file_path = 'file.json'
+    '''
+        Serializes instances to JSON file and deserializes to JSON file.
+    '''
+    __file_path = "file.json"
     __objects = {}
-    class_dict = {"BaseModel": BaseModel, "User": User, "Place": Place,
-                  "Amenity": Amenity, "City": City, "Review": Review,
-                  "State": State}
 
     def all(self, cls=None):
-        '''Return dictionary of <class>.<id> : object instance'''
-        obj = {}
-        if cls is None:
-            return (self.__objects)
+        '''
+            Return the dictionary
+        '''
+        if not cls:
+            return self.__objects
         else:
-            if type(cls) is str:
-                cls = models.classes[cls]
-            for key, val in self.__objects.items():
-                if cls.__name__ == val.__class__.__name__:
-                    obj[key] = val
-            return (obj)
+            new = {obj: key for obj, key in self.__objects.items()
+                   if type(key) == cls}
+        return(new)
 
     def new(self, obj):
-        '''Add new obj to existing dictionary of instances'''
-        if obj:
-            key = '{}.{}'.format(obj.__class__.__name__, obj.id)
-            self.__objects[key] = obj
+        '''
+            Set in __objects the obj with key <obj class name>.id
+            Aguments:
+                obj : An instance object.
+        '''
+        key = str(obj.__class__.__name__) + "." + str(obj.id)
+        value_dict = obj
+        FileStorage.__objects[key] = value_dict
 
     def save(self):
-        '''Save obj dictionaries to json file'''
-        my_dict = {}
+        '''
+            Serializes __objects attribute to JSON file.
+        '''
+        objects_dict = {}
+        for key, val in FileStorage.__objects.items():
+            objects_dict[key] = val.to_dict()
 
-        for key, obj in self.__objects.items():
-            '''if type(obj) is dict:
-            my_dict[key] = obj
-            else:'''
-            my_dict[key] = obj.to_dict()
-        with open(self.__file_path, 'w') as f:
-            json.dump(my_dict, f)
+        with open(FileStorage.__file_path, mode='w', encoding="UTF8") as fd:
+            json.dump(objects_dict, fd)
 
     def reload(self):
-        '''If json file exists, convert obj dicts back to instances'''
+        '''
+            Deserializes the JSON file to __objects.
+        '''
         try:
-            with open(self.__file_path, 'r') as f:
-                new_obj = json.load(f)
-            for key, val in new_obj.items():
-                obj = self.class_dict[val['__class__']](**val)
-                self.__objects[key] = obj
+            with open(FileStorage.__file_path, encoding="UTF8") as fd:
+                FileStorage.__objects = json.load(fd)
+            for key, val in FileStorage.__objects.items():
+                class_name = val["__class__"]
+                class_name = models.classes[class_name]
+                FileStorage.__objects[key] = class_name(**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        '''Delete obj from __objects if present'''
-        if not obj:
-            return
-        key = '{}.{}'.format(type(obj).__name__, obj.id)
-        if key in self.__objects:
-            del self.__objects[key]
-            self.save()
+        '''
+            Deletes an object from __objects if exists.
+        '''
+        FileStorage.__objects = {k: v for k, v in FileStorage.__objects.items()
+                                 if v != obj}
+
+    def close(self):
+        '''
+            call reload function for deserialization purposes
+        '''
+        self.reload()
