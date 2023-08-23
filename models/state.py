@@ -1,32 +1,37 @@
 #!/usr/bin/python3
-"""
-Module State class
-"""
-import os
-import models
-from sqlalchemy import Column, Integer, String, ForeignKey
+'''
+    Implementation of the State class
+'''
+from os import getenv
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
+import models
 
 
 class State(BaseModel, Base):
     '''
         Implementation for the State.
+        Create relationship between class State (parent) to City (child)
     '''
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-    cities = relationship('City', cascade='all, delete-orphan',
-                          backref='state')
+    __tablename__ = "states"
 
-    if os.getenv('HBNB_TYPE_STORAGE') == 'fs':
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        name = Column(String(128), nullable=False)
+        cities = relationship("City", backref="state",
+                              cascade="all, delete, delete-orphan")
+    else:
+        name = ""
+
         @property
         def cities(self):
-            """
-            Returns list of City instances with specific state id
-            """
-            res = []
-            city_inst = models.storage.all(models.classes['City']).values()
-            for k in city_inst:
-                if k.state_id == self.id:
-                    res.append(k)
-            return res
+            '''
+                Return list of city instances if City.state_id==current
+                State.id
+                FileStorage relationship between State and City
+            '''
+            list_cities = []
+            for city in models.storage.all("City").values():
+                if city.state_id == self.id:
+                    list_cities.append(city)
+            return list_cities
