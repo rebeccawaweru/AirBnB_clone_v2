@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-'''
-    This module defines the BaseModel class
-'''
+"""Define BaseModel class"""
 from os import getenv
 import uuid
 from datetime import datetime
