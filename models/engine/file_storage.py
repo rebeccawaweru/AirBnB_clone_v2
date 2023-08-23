@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+'''
+    Define class FileStorage
+'''
 import json
 import models
 
