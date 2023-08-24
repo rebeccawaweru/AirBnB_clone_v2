@@ -5,12 +5,12 @@
 from os import getenv
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from base_model import BaseModel, Base
-#import models
-from state import State
+from models.base_model import BaseModel, Base
+import models
+from models.state import State
 
 
-class City(BaseModel):
+class City(BaseModel, Base):
     '''
         Define the class City that inherits from BaseModel.
     '''
