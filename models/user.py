@@ -5,10 +5,10 @@
 from os import getenv
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from base_model import BaseModel, Base
+from models.base_model import BaseModel, Base
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     '''
         Definition of the User class
     '''
