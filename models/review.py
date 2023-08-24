@@ -5,7 +5,7 @@
 from os import getenv
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
+from base_model import BaseModel, Base
 
 
 class Review(BaseModel):
