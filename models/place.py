@@ -5,8 +5,8 @@
 from os import getenv
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from base_model import BaseModel, Base
-# from models.amenity import Amenity
+from models.base_model import BaseModel, Base
+from models.amenity import Amenity
 
 
 place_amenity = Table('place_amenity', Base.metadata,
@@ -17,7 +17,7 @@ place_amenity = Table('place_amenity', Base.metadata,
                              primary_key=True, nullable=False))
 
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     '''
         Define the class Place that inherits from BaseModel.
     '''
