@@ -3,13 +3,13 @@
     Implementation of the Amenity class
 '''
 from os import getenv
-from base_model import BaseModel, Base
-from place import place_amenity
+from models.base_model import BaseModel, Base
+from models.place import place_amenity
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 
-class Amenity(BaseModel):
+class Amenity(BaseModel, Base):
     '''
         Implementation for the Amenities.
     '''
