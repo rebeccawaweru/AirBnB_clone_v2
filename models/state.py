@@ -5,11 +5,11 @@
 from os import getenv
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from base_model import BaseModel, Base
-#import modelss
+from models.base_model import BaseModel, Base
+import modelss
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     '''
         Implementation for the State.
         Create relationship between class State (parent) to City (child)
