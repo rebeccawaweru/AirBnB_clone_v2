@@ -5,10 +5,10 @@
 from os import getenv
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-from base_model import BaseModel, Base
+from models.base_model import BaseModel, Base
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     '''
         Implementation for the Review.
     '''
