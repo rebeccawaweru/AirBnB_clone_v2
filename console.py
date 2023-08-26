@@ -103,8 +103,9 @@ class HBNBCommand(cmd.Cmd):
                             setattr(obj, pair[0], eval(pair[1]))
                         except (SyntaxError, NameError):
                             setattr(obj, pair[0], pair[1])
+                storage.new(obj)
             print(obj.id)
-            storage.save()
+            obj.save()
 
     def do_show(self, arg):
         """Show the string representation of a class of given id"""
