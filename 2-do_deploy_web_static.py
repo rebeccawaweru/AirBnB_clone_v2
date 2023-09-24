@@ -39,3 +39,7 @@ def do_deploy(archive_path):
             format(name)).failed is True:
         return False
     return True
+
+
+if __name__ == "__main__":
+    do_deploy(archive_path)
